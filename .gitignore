@@ -1,0 +1,35 @@
+# Ignorar binários compilados
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+
+# Ignorar cache do Go
+/go-build/
+
+# Ignorar diretório de dependências vendorizadas
+/vendor/
+
+# Ignorar arquivos de configuração do VS Code
+.vscode/
+.history/
+
+# Ignorar outros arquivos de configuração do editor
+*.swp
+*~
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
+*.sublime-project
+
+# Ignorar arquivos temporários e logs
+*.log
+*.tmp
+*.out
+*.pid
+*.lock
