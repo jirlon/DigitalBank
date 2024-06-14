@@ -55,9 +55,11 @@
 			<div id="nav">
 				<select id="files">
 				
-				<option value="file0">github.com/jirlon/digitalbank/app/entities/account.go (91.7%)</option>
+				<option value="file0">github.com/jirlon/digitalbank/app/entities/account.go (70.2%)</option>
 				
-				<option value="file1">github.com/jirlon/digitalbank/app/repository/mock_account_repository.go (100.0%)</option>
+				<option value="file1">github.com/jirlon/digitalbank/app/usecase/create_account.go (75.0%)</option>
+				
+				<option value="file2">github.com/jirlon/digitalbank/app/usecase/mock_account_repository.go (80.0%)</option>
 				
 				</select>
 			</div>
@@ -74,59 +76,69 @@
 		<pre class="file" id="file0" style="display: none">package entities
 
 import (
-        "regexp"
+        "errors"
         "strconv"
         "strings"
         "time"
+
+        "github.com/google/uuid"
 )
 
-// Represents a user account in the digital bank.
 type Account struct {
-        id         string
-        name       string
-        cpf        string
-        secret     string
-        balance    int64
-        created_at time.Time
+        id        string
+        name      string
+        cpf       string
+        secret    string
+        balance   int
+        createdAt time.Time
 }
 
-// constructor --------------------------------------------------------passar parametros e validar- criar arqruivo de testex'
-func NewAccount(id, cpf, name, secret string) (*Account, error) <span class="cov8" title="1">{
+func NewAccount(cpf, name, secret string, balance int) (Account, error) <span class="cov8" title="1">{
 
-        //Creates a new instance of Account.
-        account := &amp;Account{
-                id:         id,
-                cpf:        cpf,
-                name:       name,
-                secret:     secret,
-                balance:    0,
-                created_at: time.Now(),
+        if cpf == "" </span><span class="cov0" title="0">{
+                return Account{}, errors.New("empty cpf")
+        }</span>
+        <span class="cov8" title="1">if name == "" </span><span class="cov0" title="0">{
+                return Account{}, errors.New("empty name")
+        }</span>
+        <span class="cov8" title="1">if secret == "" </span><span class="cov0" title="0">{
+                return Account{}, errors.New("empty secret")
+        }</span>
+
+        <span class="cov8" title="1">err := ValidaCPF(cpf)
+        if err != nil </span><span class="cov8" title="1">{
+                return Account{}, err
+        }</span>
+
+        // Generates a UUID.
+        <span class="cov8" title="1">id := uuid.New().String()
+
+        account := Account{
+                id:        id,
+                cpf:       cpf,
+                name:      name,
+                secret:    secret,
+                balance:   balance,
+                createdAt: time.Now(),
         }
 
-        return account, nil
-}</span>
-
-// Verifica se algum campo esta vazio.
-func EmptyField(cpf, name, secret string) bool <span class="cov8" title="1">{
-        if cpf == "" || name == "" || secret == "" </span><span class="cov8" title="1">{
-                return true
-        }</span>
-        <span class="cov0" title="0">return false</span>
+        return account, nil</span>
 }
 
-// Valida um CPF brasileiro.
-func ValidaCPF(cpf string) bool <span class="cov8" title="1">{
+func NewAccountHelper(cpf, name, secret string, balance int) Account <span class="cov0" title="0">{
+        account, err := NewAccount(cpf, name, secret, balance)
+        if err != nil </span><span class="cov0" title="0">{
+                return Account{}
+        }</span>
+        <span class="cov0" title="0">return account</span>
+}
+
+func ValidaCPF(cpf string) error <span class="cov8" title="1">{
         cpf = strings.ReplaceAll(cpf, ".", "")
         cpf = strings.ReplaceAll(cpf, "-", "")
 
-        // Verifica se o CPF tem 11 dígitos
         if len(cpf) != 11 </span><span class="cov8" title="1">{
-                return false
-        }</span>
-
-        // Verifica se todos os dígitos são iguais
-        <span class="cov8" title="1">if matched, _ := regexp.MatchString(`(\d)\1{10}`, cpf); matched </span><span class="cov0" title="0">{
-                return false
+                return errors.New("invalid CPF length")
         }</span>
 
         // Calcula o primeiro dígito verificador
@@ -139,7 +151,7 @@ func ValidaCPF(cpf string) bool <span class="cov8" title="1">{
         var primeiroDigitoVerificador int
         if resto &lt; 2 </span><span class="cov8" title="1">{
                 primeiroDigitoVerificador = 0
-        }</span> else<span class="cov8" title="1"> {
+        }</span> else<span class="cov0" title="0"> {
                 primeiroDigitoVerificador = 11 - resto
         }</span>
 
@@ -151,74 +163,107 @@ func ValidaCPF(cpf string) bool <span class="cov8" title="1">{
         }</span>
         <span class="cov8" title="1">resto = soma % 11
         var segundoDigitoVerificador int
-        if resto &lt; 2 </span><span class="cov0" title="0">{
+        if resto &lt; 2 </span><span class="cov8" title="1">{
                 segundoDigitoVerificador = 0
         }</span> else<span class="cov8" title="1"> {
                 segundoDigitoVerificador = 11 - resto
         }</span>
 
         // Verifica se os dígitos verificadores são corretos
-        <span class="cov8" title="1">return primeiroDigitoVerificador == int(cpf[9]-'0') &amp;&amp; segundoDigitoVerificador == int(cpf[10]-'0')</span>
+        <span class="cov8" title="1">if primeiroDigitoVerificador == int(cpf[9]-'0') &amp;&amp; segundoDigitoVerificador == int(cpf[10]-'0') </span><span class="cov8" title="1">{
+                return nil
+        }</span>
+        <span class="cov8" title="1">return errors.New("invalid CPF")</span>
 }
 
-// Returns the account's ID.
-func (a *Account) GetID() string <span class="cov8" title="1">{
+func (a *Account) GetID() string <span class="cov0" title="0">{
         return a.id
 }</span>
 
-// Returns the account's CPF.
-func (a *Account) GetCPF() string <span class="cov8" title="1">{
+func (a *Account) GetCPF() string <span class="cov0" title="0">{
         return a.cpf
 }</span>
 
-// Returns the account's name.
-func (a *Account) GetName() string <span class="cov8" title="1">{
+func (a *Account) GetName() string <span class="cov0" title="0">{
         return a.name
 }</span>
 
-// Returns the account's secret.
-func (a *Account) GetSecret() string <span class="cov8" title="1">{
+func (a *Account) GetSecret() string <span class="cov0" title="0">{
         return a.secret
 }</span>
 
-// Returns the account's balance.
-func (a *Account) GetBalance() int64 <span class="cov8" title="1">{
+func (a *Account) GetBalance() int <span class="cov0" title="0">{
         return a.balance
 }</span>
 
-// Returns the account creation date.
-func (a *Account) GetCreatedAt() time.Time <span class="cov8" title="1">{
-        return a.created_at
+func (a *Account) GetCreatedAt() time.Time <span class="cov0" title="0">{
+        return a.createdAt
 }</span>
 </pre>
 		
-		<pre class="file" id="file1" style="display: none">package repository
+		<pre class="file" id="file1" style="display: none">package usecase
 
 import (
         "github.com/jirlon/digitalbank/app/entities"
 )
 
-// Implementação mock do AccountRepository.
+type CreateAccountUseCase struct {
+        repo AccountRepository
+}
+
+type AccountRepository interface {
+        SaveAccount(account entities.Account) error
+}
+
+func NewCreateAccountUseCase(repo AccountRepository) CreateAccountUseCase <span class="cov0" title="0">{
+        return CreateAccountUseCase{repo: repo}
+}</span>
+
+// Create a new account with the data provided.
+func (uc CreateAccountUseCase) CreateAccount(cpf, name, secret string, balance int) (entities.Account, error) <span class="cov8" title="1">{
+
+        // Calls the constructor to validate the data.
+        account, err := entities.NewAccount(cpf, name, secret, balance)
+
+        if err != nil </span><span class="cov0" title="0">{
+                return entities.Account{}, err
+        }</span>
+
+        <span class="cov8" title="1">err = uc.repo.SaveAccount(account)
+
+        // If there was an error in the SaveAccount method, then return nil and the error.
+        if err != nil </span><span class="cov8" title="1">{
+                return entities.Account{}, err
+        }</span>
+
+        <span class="cov8" title="1">return account, err</span>
+}
+</pre>
+		
+		<pre class="file" id="file2" style="display: none">package usecase
+
+import (
+        "github.com/jirlon/digitalbank/app/entities"
+)
+
 type MockAccountRepository struct {
-        accounts map[string]*entities.Account
+        accounts map[string]entities.Account
         ErrSave  error
 }
 
-// Cria uma nova instância de MockAccountRepository.
-func NewMockAccountRepository() *MockAccountRepository <span class="cov8" title="1">{
+func NewMockAccountRepository() *MockAccountRepository <span class="cov0" title="0">{
         return &amp;MockAccountRepository{
-                accounts: make(map[string]*entities.Account),
+                accounts: make(map[string]entities.Account),
         }
 }</span>
 
-// Salva uma conta no repositório mock.
-func (r *MockAccountRepository) SaveAccount(account *entities.Account) error <span class="cov8" title="1">{
-        //se houver um erro não salva e retorna o erro
-        if r.ErrSave != nil </span><span class="cov8" title="1">{
-                return r.ErrSave
+func (m MockAccountRepository) SaveAccount(account entities.Account) error <span class="cov8" title="1">{
+        //if there is an error it does not save and returns the error
+        if m.ErrSave != nil </span><span class="cov8" title="1">{
+                return m.ErrSave
         }</span>
-        //não tem erro, então salva a conta e retorna nil
-        <span class="cov8" title="1">r.accounts[account.GetID()] = account
+        //there is no error, so save the account and return nil
+        <span class="cov8" title="1">m.accounts[account.GetID()] = account
         return nil</span>
 }
 </pre>

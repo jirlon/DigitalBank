@@ -1,59 +1,69 @@
 package entities
 
 import (
-	"regexp"
+	"errors"
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/google/uuid"
 )
 
-// Represents a user account in the digital bank.
 type Account struct {
-	id         string
-	name       string
-	cpf        string
-	secret     string
-	balance    int64
-	created_at time.Time
+	id        string
+	name      string
+	cpf       string
+	secret    string
+	balance   int
+	createdAt time.Time
 }
 
-// constructor
-func NewAccount(id, cpf, name, secret string) (*Account, error) {
+func NewAccount(cpf, name, secret string, balance int) (Account, error) {
 
-	//Creates a new instance of Account.
-	account := &Account{
-		id:         id,
-		cpf:        cpf,
-		name:       name,
-		secret:     secret,
-		balance:    0,
-		created_at: time.Now(),
+	if cpf == "" {
+		return Account{}, errors.New("empty cpf")
+	}
+	if name == "" {
+		return Account{}, errors.New("empty name")
+	}
+	if secret == "" {
+		return Account{}, errors.New("empty secret")
+	}
+
+	err := ValidaCPF(cpf)
+	if err != nil {
+		return Account{}, err
+	}
+
+	// Generates a UUID.
+	id := uuid.New().String()
+
+	account := Account{
+		id:        id,
+		cpf:       cpf,
+		name:      name,
+		secret:    secret,
+		balance:   balance,
+		createdAt: time.Now(),
 	}
 
 	return account, nil
 }
 
-// Check if any fields are empty.
-func EmptyField(cpf, name, secret string) bool {
-	if cpf == "" || name == "" || secret == "" {
-		return true
+func NewAccountHelper(cpf, name, secret string, balance int) Account {
+	account, err := NewAccount(cpf, name, secret, balance)
+	if err != nil {
+		return Account{}
 	}
-	return false
+	return account
 }
 
-// Validates a Brazilian CPF.
-func ValidaCPF(cpf string) bool {
+func ValidaCPF(cpf string) error {
 	cpf = strings.ReplaceAll(cpf, ".", "")
 	cpf = strings.ReplaceAll(cpf, "-", "")
 
-	// Verifica se o CPF tem 11 dígitos
 	if len(cpf) != 11 {
-		return false
-	}
-
-	// Verifica se todos os dígitos são iguais
-	if matched, _ := regexp.MatchString(`(\d)\1{10}`, cpf); matched {
-		return false
+		return errors.New("invalid CPF length")
 	}
 
 	// Calcula o primeiro dígito verificador
@@ -85,35 +95,32 @@ func ValidaCPF(cpf string) bool {
 	}
 
 	// Verifica se os dígitos verificadores são corretos
-	return primeiroDigitoVerificador == int(cpf[9]-'0') && segundoDigitoVerificador == int(cpf[10]-'0')
+	if primeiroDigitoVerificador == int(cpf[9]-'0') && segundoDigitoVerificador == int(cpf[10]-'0') {
+		return nil
+	}
+	return errors.New("invalid CPF")
 }
 
-// Returns the account's ID.
 func (a *Account) GetID() string {
 	return a.id
 }
 
-// Returns the account's CPF.
 func (a *Account) GetCPF() string {
 	return a.cpf
 }
 
-// Returns the account's name.
 func (a *Account) GetName() string {
 	return a.name
 }
 
-// Returns the account's secret.
 func (a *Account) GetSecret() string {
 	return a.secret
 }
 
-// Returns the account's balance.
-func (a *Account) GetBalance() int64 {
+func (a *Account) GetBalance() int {
 	return a.balance
 }
 
-// Returns the account creation date.
 func (a *Account) GetCreatedAt() time.Time {
-	return a.created_at
+	return a.createdAt
 }

@@ -1,0 +1,11 @@
+mode: set
+github.com/jirlon/digitalbank/app/usecase/create_account.go:24.75,26.2 1 1
+github.com/jirlon/digitalbank/app/usecase/create_account.go:29.111,35.16 2 1
+github.com/jirlon/digitalbank/app/usecase/create_account.go:35.16,37.3 1 1
+github.com/jirlon/digitalbank/app/usecase/create_account.go:40.2,43.16 2 1
+github.com/jirlon/digitalbank/app/usecase/create_account.go:43.16,45.3 1 1
+github.com/jirlon/digitalbank/app/usecase/create_account.go:47.2,47.21 1 1
+github.com/jirlon/digitalbank/app/usecase/mock_account_repository.go:16.56,20.2 1 1
+github.com/jirlon/digitalbank/app/usecase/mock_account_repository.go:23.76,25.22 1 1
+github.com/jirlon/digitalbank/app/usecase/mock_account_repository.go:25.22,27.3 1 1
+github.com/jirlon/digitalbank/app/usecase/mock_account_repository.go:29.2,30.12 2 1

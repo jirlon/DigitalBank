@@ -8,7 +8,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestCreateAccountUseCase(t *testing.T) {
+func TestMockAccountRepository_Save(t *testing.T) {
 
 	t.Parallel()
 
@@ -28,7 +28,7 @@ func TestCreateAccountUseCase(t *testing.T) {
 		errMsg  error
 	}{
 		{
-			nameT: "Create new account successfully",
+			nameT: "Save account sucessfully",
 			args: args{
 				cpf:     "90948239000",
 				name:    "Ronaldo Fenômeno",
@@ -50,14 +50,13 @@ func TestCreateAccountUseCase(t *testing.T) {
 			wantErr: false,
 			errMsg:  nil,
 		},
-
 		{
 			nameT: "Error saving account",
 			args: args{
 				cpf:     "90948239000",
-				name:    "Ronaldinho Gaucho",
-				secret:  "r10",
-				balance: 3000,
+				name:    "Roberto Carlos",
+				secret:  "r6",
+				balance: 2000,
 			},
 			setup: func(t *testing.T) CreateAccountUseCase {
 				return CreateAccountUseCase{
@@ -68,7 +67,7 @@ func TestCreateAccountUseCase(t *testing.T) {
 				}
 			},
 			want: func() entities.Account {
-				account := entities.NewAccountHelper("90948239000", "Ronaldinho Gaucho", "r10", 3000)
+				account := entities.NewAccountHelper("90948239000", "Roberto Carlos", "r6", 2000)
 				return account
 			}(),
 			wantErr: true,
@@ -80,13 +79,14 @@ func TestCreateAccountUseCase(t *testing.T) {
 		t.Run(tt.nameT, func(t *testing.T) {
 			t.Parallel()
 
-			account, err := tt.setup(t).CreateAccount(tt.args.cpf, tt.args.name, tt.args.secret, tt.args.balance)
+			account, err := entities.NewAccount(tt.args.cpf, tt.args.name, tt.args.secret, tt.args.balance)
 
 			if tt.wantErr {
+				err = tt.setup(t).repo.SaveAccount(account)
 				assert.Error(t, err)
+
 				if tt.errMsg != nil {
 					assert.EqualError(t, err, tt.errMsg.Error())
-					assert.Empty(t, account)
 				}
 			} else {
 				assert.NoError(t, err)
@@ -97,7 +97,6 @@ func TestCreateAccountUseCase(t *testing.T) {
 				assert.NotEmpty(t, account.GetID())
 
 				assert.NotEmpty(t, account.GetCreatedAt())
-
 			}
 		})
 	}

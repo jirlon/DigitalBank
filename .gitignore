@@ -33,3 +33,7 @@
 *.out
 *.pid
 *.lock
+
+# Ignore coverage files
+coverage.out 
+coverage.html
