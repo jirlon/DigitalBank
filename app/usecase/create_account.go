@@ -1,6 +1,8 @@
 package usecase
 
 import (
+	"context"
+
 	"github.com/jirlon/digitalbank/app/entities"
 )
 
@@ -17,7 +19,7 @@ func NewCreateAccountUseCase(repo AccountRepository) CreateAccountUseCase {
 }
 
 // Create a new account with the data provided.
-func (uc CreateAccountUseCase) CreateAccount(cpf, name, secret string, balance int) (entities.Account, error) {
+func (uc CreateAccountUseCase) CreateAccount(ctx context.Context, cpf, name, secret string, balance int) (entities.Account, error) {
 
 	// Calls the constructor to validate the data.
 	account, err := entities.NewAccount(cpf, name, secret, balance)

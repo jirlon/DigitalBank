@@ -1,6 +1,7 @@
 package usecase
 
 import (
+	"context"
 	"errors"
 	"testing"
 
@@ -80,7 +81,7 @@ func TestCreateAccountUseCase(t *testing.T) {
 		t.Run(tt.nameT, func(t *testing.T) {
 			t.Parallel()
 
-			account, err := tt.setup(t).CreateAccount(tt.args.cpf, tt.args.name, tt.args.secret, tt.args.balance)
+			account, err := tt.setup(t).CreateAccount(context.Background(), tt.args.cpf, tt.args.name, tt.args.secret, tt.args.balance)
 
 			if tt.wantErr {
 				assert.Error(t, err)
