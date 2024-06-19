@@ -50,6 +50,32 @@ func NewAccount(cpf, name, secret string, balance int) (Account, error) {
 	return account, nil
 }
 
+func ParseAccount(id, cpf, name, secret string, balance int, createdAt time.Time) (Account, error) {
+
+	if cpf == "" {
+		return Account{}, errors.New("empty cpf")
+	}
+	if name == "" {
+		return Account{}, errors.New("empty name")
+	}
+
+	err := ValidaCPF(cpf)
+	if err != nil {
+		return Account{}, err
+	}
+
+	account := Account{
+		id:        id,
+		cpf:       cpf,
+		name:      name,
+		secret:    secret,
+		balance:   balance,
+		createdAt: createdAt,
+	}
+
+	return account, nil
+}
+
 func NewAccountHelper(cpf, name, secret string, balance int) Account {
 	account, err := NewAccount(cpf, name, secret, balance)
 	if err != nil {
