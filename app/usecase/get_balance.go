@@ -11,8 +11,8 @@ type GetBalanceUC struct {
 }
 
 func (uc GetBalanceUC) GetBalance(accountID string) (int, error) {
-	var ctx context.Context
-	balance, err := uc.balanceRepo.GetByAccountID(ctx, accountID)
+
+	balance, err := uc.balanceRepo.GetByAccountID(context.Background(), accountID)
 	return balance, err
 }
 

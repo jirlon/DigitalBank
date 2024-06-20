@@ -14,13 +14,14 @@ type getBalanceHandler struct {
 	getBalanceUC usecase.GetBalanceUC
 }
 
+type getBalanceResponse struct {
+	Balance int `json:"balance"`
+}
+
 func (h getBalanceHandler) GetBalance(w http.ResponseWriter, r *http.Request) rest.Response {
-	//vars := mux.Vars(r)
-	//id := vars["account_id"]
-	//id := r.URL.Query().Get("account_id")
 	id := chi.URLParam(r, "account_id")
 	if id == "" {
-		return rest.BadRequest(nil, errors.New("missing id parameter"))
+		return rest.BadRequest(nil, errors.New("missing account_id parameter"))
 	}
 
 	balance, err := h.getBalanceUC.GetBalance(id)
@@ -29,9 +30,9 @@ func (h getBalanceHandler) GetBalance(w http.ResponseWriter, r *http.Request) re
 		return rest.InternalServerError(nil, err)
 	}
 
-	response := map[string]int{"balance": balance}
+	response := getBalanceResponse{Balance: balance}
 
-	return rest.Created(response)
+	return rest.OK(response)
 }
 
 func NewGetBalanceHandler(getBalanceUC usecase.GetBalanceUC) *getBalanceHandler {

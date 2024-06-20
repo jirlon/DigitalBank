@@ -1,8 +1,6 @@
 package api
 
 import (
-	"context"
-	"fmt"
 	"net/http"
 
 	"github.com/go-chi/chi"
@@ -16,8 +14,6 @@ import (
 
 func NewRouter(dbpool *pgxpool.Pool) http.Handler {
 	accountRepo := repositories.New(dbpool)
-	retorno, _ := accountRepo.FindAll(context.TODO())
-	fmt.Println(retorno)
 	createAccountUC := usecase.NewCreateAccountUseCase(accountRepo)
 	listAccountUC := usecase.NewListAccountUseCase(accountRepo)
 	getBalanceUC := usecase.NewGetBalanceUseCase(accountRepo)

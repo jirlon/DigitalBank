@@ -15,8 +15,7 @@ type ListAccountUC struct {
 }
 
 func (uc ListAccountUC) ListAccount() ([]entities.Account, error) {
-	var ctx context.Context
-	return uc.repo.FindAll(ctx)
+	return uc.repo.FindAll(context.Background())
 }
 
 func NewListAccountUseCase(repo listAccountAccountRepository) ListAccountUC {

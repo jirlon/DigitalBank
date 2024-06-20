@@ -6,18 +6,6 @@ import (
 	"errors"
 )
 
-/*
-type BalanceRepository struct {
-	q *pgxpool.Pool
-}
-
-
-func NewBalance(q *pgxpool.Pool) *BalanceRepository {
-	return &BalanceRepository{
-		q: q,
-	}
-}*/
-
 func (a AccountRepository) GetByAccountID(ctx context.Context, accountID string) (int, error) {
 	row := a.q.QueryRow(ctx, "SELECT balance FROM accounts where id = $1", accountID)
 
