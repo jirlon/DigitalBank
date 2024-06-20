@@ -1,9 +1,13 @@
 package usecase
 
-import "github.com/jirlon/digitalbank/app/entities"
+import (
+	"context"
+
+	"github.com/jirlon/digitalbank/app/entities"
+)
 
 type listAccountAccountRepository interface {
-	FindAll() ([]entities.Account, error)
+	FindAll(ctx context.Context) ([]entities.Account, error)
 }
 
 type ListAccountUC struct {
@@ -11,7 +15,8 @@ type ListAccountUC struct {
 }
 
 func (uc ListAccountUC) ListAccount() ([]entities.Account, error) {
-	return uc.repo.FindAll()
+	var ctx context.Context
+	return uc.repo.FindAll(ctx)
 }
 
 func NewListAccountUseCase(repo listAccountAccountRepository) ListAccountUC {

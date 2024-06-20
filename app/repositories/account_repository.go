@@ -18,8 +18,8 @@ func New(q *pgxpool.Pool) *AccountRepository {
 	}
 }
 
-func (a AccountRepository) FindAll() ([]entities.Account, error) {
-	rows, err := a.q.Query(context.Background(), "SELECT id, cpf, name, balance, created_at FROM accounts")
+func (a AccountRepository) FindAll(ctx context.Context) ([]entities.Account, error) {
+	rows, err := a.q.Query(ctx, "SELECT id, cpf, name, balance, created_at FROM accounts")
 	if err != nil {
 		return nil, err
 	}

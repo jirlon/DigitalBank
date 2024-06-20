@@ -20,7 +20,10 @@ func main() {
 		panic(err)
 	}
 	defer pool.Close()
-
+	err = pool.Ping(ctx)
+	if err != nil {
+		panic(err)
+	}
 	r := api.NewRouter(pool)
 
 	log.Println("Starting server on :3000")

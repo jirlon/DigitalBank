@@ -1,6 +1,8 @@
 package api
 
 import (
+	"context"
+	"fmt"
 	"net/http"
 
 	"github.com/go-chi/chi"
@@ -14,11 +16,15 @@ import (
 
 func NewRouter(dbpool *pgxpool.Pool) http.Handler {
 	accountRepo := repositories.New(dbpool)
+	retorno, _ := accountRepo.FindAll(context.TODO())
+	fmt.Println(retorno)
 	createAccountUC := usecase.NewCreateAccountUseCase(accountRepo)
 	listAccountUC := usecase.NewListAccountUseCase(accountRepo)
+	getBalanceUC := usecase.NewGetBalanceUseCase(accountRepo)
 
 	createAccountHandler := handler.NewCreateAccountHandler(createAccountUC)
 	listAccountHandler := handler.NewListAccountHandler(listAccountUC)
+	getBalanceHandler := handler.NewGetBalanceHandler(getBalanceUC)
 
 	mainRouter := chi.NewRouter()
 	mainRouter.Use(middleware.Logger)
@@ -27,6 +33,7 @@ func NewRouter(dbpool *pgxpool.Pool) http.Handler {
 	accountsRouter.Route("/accounts", func(r chi.Router) {
 		r.Post("/", rest.Handle(createAccountHandler.CreateAccount))
 		r.Get("/", rest.Handle(listAccountHandler.ListAccounts))
+		r.Get("/{account_id}/balance", rest.Handle(getBalanceHandler.GetBalance))
 	})
 
 	mainRouter.Mount("/digitalbank/v1", accountsRouter)

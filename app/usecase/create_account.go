@@ -6,12 +6,12 @@ import (
 	"github.com/jirlon/digitalbank/app/entities"
 )
 
-type CreateAccountUseCase struct {
-	repo createAccountAccountRepository
-}
-
 type createAccountAccountRepository interface {
 	SaveAccount(account entities.Account) error
+}
+
+type CreateAccountUseCase struct {
+	repo createAccountAccountRepository
 }
 
 // Create a new account with the data provided.
