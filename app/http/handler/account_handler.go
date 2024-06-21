@@ -18,10 +18,6 @@ type createAccountResponse struct {
 	Balance int    `json:"balance"`
 }
 
-func NewAccountHandler(createAccountUC usecase.CreateAccountUseCase) *AccountHandler {
-	return &AccountHandler{createAccountUC: createAccountUC}
-}
-
 func (h AccountHandler) CreateAccount(w http.ResponseWriter, r *http.Request) rest.Response {
 	var req struct {
 		CPF     string `json:"cpf"`
@@ -44,4 +40,8 @@ func (h AccountHandler) CreateAccount(w http.ResponseWriter, r *http.Request) re
 		Name:    account.GetName(),
 		Balance: account.GetBalance(),
 	})
+}
+
+func NewCreateAccountHandler(createAccountUC usecase.CreateAccountUseCase) *AccountHandler {
+	return &AccountHandler{createAccountUC: createAccountUC}
 }

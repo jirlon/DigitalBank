@@ -26,6 +26,13 @@ func Created(body any) Response {
 	}
 }
 
+func OK(body any) Response {
+	return Response{
+		StatusCode: http.StatusOK,
+		Body:       body,
+	}
+}
+
 func BadRequest(body any, err error) Response {
 	return Response{
 		StatusCode: http.StatusBadRequest,

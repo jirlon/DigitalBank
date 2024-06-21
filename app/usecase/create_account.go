@@ -6,16 +6,12 @@ import (
 	"github.com/jirlon/digitalbank/app/entities"
 )
 
-type CreateAccountUseCase struct {
-	repo AccountRepository
-}
-
-type AccountRepository interface {
+type createAccountAccountRepository interface {
 	SaveAccount(account entities.Account) error
 }
 
-func NewCreateAccountUseCase(repo AccountRepository) CreateAccountUseCase {
-	return CreateAccountUseCase{repo: repo}
+type CreateAccountUseCase struct {
+	repo createAccountAccountRepository
 }
 
 // Create a new account with the data provided.
@@ -36,4 +32,8 @@ func (uc CreateAccountUseCase) CreateAccount(ctx context.Context, cpf, name, sec
 	}
 
 	return account, err
+}
+
+func NewCreateAccountUseCase(repo createAccountAccountRepository) CreateAccountUseCase {
+	return CreateAccountUseCase{repo: repo}
 }
