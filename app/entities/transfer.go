@@ -42,8 +42,8 @@ func NewTransfer(accountOriginID, accountDestinationID string, amount int) (Tran
 	if accountDestinationID == "" {
 		return Transfer{}, errors.New("empty destinationID")
 	}
-	if amount == 0 {
-		return Transfer{}, errors.New("empty amount")
+	if amount <= 0 {
+		return Transfer{}, errors.New("amount should be greater than zero")
 	}
 
 	transferID := uuid.New().String()
