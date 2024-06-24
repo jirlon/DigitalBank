@@ -45,6 +45,7 @@ func TestNewTransfer(t *testing.T) {
 			if tt.errMsg != nil {
 				assert.EqualError(t, err, tt.errMsg.Error())
 			} else {
+                                require.NoError(t, err)
 				assert.NotEmpty(t, transfer.transferID)
 				transfer.transferID = ""
 				assert.NotEmpty(t, transfer.createdAt)
