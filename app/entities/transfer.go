@@ -8,7 +8,7 @@ import (
 )
 
 type Transfer struct {
-	transferID           string
+	id          string
 	accountOriginID      string
 	accountDestinationID string
 	amount               int
