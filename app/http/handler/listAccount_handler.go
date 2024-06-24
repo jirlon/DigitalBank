@@ -47,7 +47,7 @@ func (h listAccountHandler) ListAccounts(w http.ResponseWriter, r *http.Request)
 		Accounts: accountResponses,
 	}
 
-	return rest.Created(response)
+	return rest.OK(response)
 }
 
 func NewListAccountHandler(listAccountUC usecase.ListAccountUC) *listAccountHandler {

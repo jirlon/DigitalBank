@@ -17,10 +17,12 @@ func NewRouter(dbpool *pgxpool.Pool) http.Handler {
 	createAccountUC := usecase.NewCreateAccountUseCase(accountRepo)
 	listAccountUC := usecase.NewListAccountUseCase(accountRepo)
 	getBalanceUC := usecase.NewGetBalanceUseCase(accountRepo)
+	createTransferUC := usecase.NewCreateTransferUseCase(accountRepo, accountRepo)
 
 	createAccountHandler := handler.NewCreateAccountHandler(createAccountUC)
 	listAccountHandler := handler.NewListAccountHandler(listAccountUC)
 	getBalanceHandler := handler.NewGetBalanceHandler(getBalanceUC)
+	createTransferHandler := handler.NewCreateTransferHamdler(createTransferUC)
 
 	mainRouter := chi.NewRouter()
 	mainRouter.Use(middleware.Logger)
@@ -30,6 +32,7 @@ func NewRouter(dbpool *pgxpool.Pool) http.Handler {
 		r.Post("/", rest.Handle(createAccountHandler.CreateAccount))
 		r.Get("/", rest.Handle(listAccountHandler.ListAccounts))
 		r.Get("/{account_id}/balance", rest.Handle(getBalanceHandler.GetBalance))
+		r.Post("/transfers", rest.Handle(createTransferHandler.CreateTransfer))
 	})
 
 	mainRouter.Mount("/digitalbank/v1", accountsRouter)
