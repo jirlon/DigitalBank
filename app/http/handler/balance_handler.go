@@ -24,13 +24,13 @@ func (h getBalanceHandler) GetBalance(w http.ResponseWriter, r *http.Request) re
 		return rest.BadRequest(nil, errors.New("missing account_id parameter"))
 	}
 
-	balance, err := h.getBalanceUC.GetBalance(id)
+	account, err := h.getBalanceUC.GetBalance(id)
 	if err != nil {
 		logrus.Error(err)
 		return rest.InternalServerError(nil, err)
 	}
 
-	response := getBalanceResponse{Balance: balance}
+	response := getBalanceResponse{Balance: account.GetBalance()}
 
 	return rest.OK(response)
 }

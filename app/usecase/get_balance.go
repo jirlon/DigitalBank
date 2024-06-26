@@ -1,19 +1,23 @@
 package usecase
 
-import "context"
+import (
+	"context"
+
+	"github.com/jirlon/digitalbank/app/entities"
+)
 
 type getBalanceAccountRepository interface {
-	GetByAccountID(ctx context.Context, accountID string) (int, error)
+	GetByAccountID(ctx context.Context, accountID string) (entities.Account, error)
 }
 
 type GetBalanceUC struct {
 	balanceRepo getBalanceAccountRepository
 }
 
-func (uc GetBalanceUC) GetBalance(accountID string) (int, error) {
+func (uc GetBalanceUC) GetBalance(accountID string) (entities.Account, error) {
 
-	balance, err := uc.balanceRepo.GetByAccountID(context.Background(), accountID)
-	return balance, err
+	account, err := uc.balanceRepo.GetByAccountID(context.Background(), accountID)
+	return account, err
 }
 
 func NewGetBalanceUseCase(repo getBalanceAccountRepository) GetBalanceUC {
