@@ -14,10 +14,11 @@ import (
 
 func NewRouter(dbpool *pgxpool.Pool) http.Handler {
 	accountRepo := repositories.New(dbpool)
+	transferRepo := repositories.NewTransfer(dbpool)
 	createAccountUC := usecase.NewCreateAccountUseCase(accountRepo)
 	listAccountUC := usecase.NewListAccountUseCase(accountRepo)
 	getBalanceUC := usecase.NewGetBalanceUseCase(accountRepo)
-	createTransferUC := usecase.NewCreateTransferUseCase(accountRepo, accountRepo)
+	createTransferUC := usecase.NewCreateTransferUseCase(transferRepo, accountRepo)
 
 	createAccountHandler := handler.NewCreateAccountHandler(createAccountUC)
 	listAccountHandler := handler.NewListAccountHandler(listAccountUC)

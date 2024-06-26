@@ -45,7 +45,7 @@ func TestCreateAccountUseCase(t *testing.T) {
 				}
 			},
 			want: func() entities.Account {
-				account := entities.NewAccountHelper("90948239000", "Ronaldo Fenômeno", "r9", 1000)
+				account := entities.NewAccountHelper("", "90948239000", "Ronaldo Fenômeno", "r9", 1000)
 				return account
 			}(),
 			wantErr: false,
@@ -69,7 +69,7 @@ func TestCreateAccountUseCase(t *testing.T) {
 				}
 			},
 			want: func() entities.Account {
-				account := entities.NewAccountHelper("90948239000", "Ronaldinho Gaucho", "r10", 3000)
+				account := entities.NewAccountHelper("", "90948239000", "Ronaldinho Gaucho", "r10", 3000)
 				return account
 			}(),
 			wantErr: true,

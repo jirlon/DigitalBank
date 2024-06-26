@@ -44,7 +44,7 @@ func TestMockAccountRepository_Save(t *testing.T) {
 				}
 			},
 			want: func() entities.Account {
-				account := entities.NewAccountHelper("90948239000", "Ronaldo Fenômeno", "r9", 1000)
+				account := entities.NewAccountHelper("", "90948239000", "Ronaldo Fenômeno", "r9", 1000)
 				return account
 			}(),
 			wantErr: false,
@@ -67,7 +67,7 @@ func TestMockAccountRepository_Save(t *testing.T) {
 				}
 			},
 			want: func() entities.Account {
-				account := entities.NewAccountHelper("90948239000", "Roberto Carlos", "r6", 2000)
+				account := entities.NewAccountHelper("", "90948239000", "Roberto Carlos", "r6", 2000)
 				return account
 			}(),
 			wantErr: true,

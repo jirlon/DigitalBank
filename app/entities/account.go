@@ -18,10 +18,13 @@ type Account struct {
 	createdAt time.Time
 }
 
-func NewAccountHelper(cpf, name, secret string, balance int) Account {
+func NewAccountHelper(id, cpf, name, secret string, balance int) Account {
 	account, err := NewAccount(cpf, name, secret, balance)
 	if err != nil {
 		return Account{}
+	}
+	if id != "" {
+		account.id = id
 	}
 	return account
 }
