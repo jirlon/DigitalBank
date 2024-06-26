@@ -1,10 +1,12 @@
 package entities
 
 import (
+	"errors"
 	"testing"
 	"time"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func TestNewTransfer(t *testing.T) {
@@ -36,6 +38,28 @@ func TestNewTransfer(t *testing.T) {
 			},
 			errMsg: nil,
 		},
+
+		{
+			nameT: "Origin and destination account are the same",
+			args: args{
+				accountOriginID:      "ca5ad981-d471-4172-9a46-8ecf1551307b",
+				accountDestinationID: "ca5ad981-d471-4172-9a46-8ecf1551307b",
+				amount:               30000,
+			},
+			want:   Transfer{},
+			errMsg: errors.New("origin and destination account are the same"),
+		},
+
+		{
+			nameT: "Invalid amount",
+			args: args{
+				accountOriginID:      "ca5ad981-d471-4172-9a46-8ecf1551307b",
+				accountDestinationID: "8b72a4e1-a7b1-473d-be6a-0f20683dc3d7",
+				amount:               -1,
+			},
+			want:   Transfer{},
+			errMsg: errors.New("amount should be greater than zero"),
+		},
 	}
 
 	for _, tt := range tests {
@@ -45,9 +69,9 @@ func TestNewTransfer(t *testing.T) {
 			if tt.errMsg != nil {
 				assert.EqualError(t, err, tt.errMsg.Error())
 			} else {
-                                require.NoError(t, err)
-				assert.NotEmpty(t, transfer.transferID)
-				transfer.transferID = ""
+				require.NoError(t, err)
+				assert.NotEmpty(t, transfer.id)
+				transfer.id = ""
 				assert.NotEmpty(t, transfer.createdAt)
 				transfer.createdAt = time.Time{}
 				assert.Equal(t, tt.want, transfer)

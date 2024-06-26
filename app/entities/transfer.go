@@ -8,7 +8,7 @@ import (
 )
 
 type Transfer struct {
-	id          string
+	id                   string
 	accountOriginID      string
 	accountDestinationID string
 	amount               int
@@ -16,7 +16,7 @@ type Transfer struct {
 }
 
 func (t Transfer) GetTransferID() string {
-	return t.transferID
+	return t.id
 }
 
 func (t Transfer) GetAccountOriginID() string {
@@ -35,12 +35,23 @@ func (t Transfer) GetCreatedAt() time.Time {
 	return t.createdAt
 }
 
+func NewTransferHelper(accountOriginID, accountDestinationID string, amount int) Transfer {
+	transfer, err := NewTransfer(accountOriginID, accountDestinationID, amount)
+	if err != nil {
+		return Transfer{}
+	}
+	return transfer
+}
+
 func NewTransfer(accountOriginID, accountDestinationID string, amount int) (Transfer, error) {
 	if accountOriginID == "" {
 		return Transfer{}, errors.New("empty originID")
 	}
 	if accountDestinationID == "" {
 		return Transfer{}, errors.New("empty destinationID")
+	}
+	if accountOriginID == accountDestinationID {
+		return Transfer{}, errors.New("origin and destination account are the same")
 	}
 	if amount <= 0 {
 		return Transfer{}, errors.New("amount should be greater than zero")
@@ -49,7 +60,7 @@ func NewTransfer(accountOriginID, accountDestinationID string, amount int) (Tran
 	transferID := uuid.New().String()
 
 	transfer := Transfer{
-		transferID:           transferID,
+		id:                   transferID,
 		accountOriginID:      accountOriginID,
 		accountDestinationID: accountDestinationID,
 		amount:               amount,
