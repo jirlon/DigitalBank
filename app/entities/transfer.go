@@ -8,7 +8,11 @@ import (
 )
 
 type Transfer struct {
+<<<<<<< HEAD
 	id                   string
+=======
+	id          string
+>>>>>>> f7fd4db3958de8929620e3598db0423ab19f16a1
 	accountOriginID      string
 	accountDestinationID string
 	amount               int
